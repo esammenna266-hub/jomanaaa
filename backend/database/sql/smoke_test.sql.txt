@@ -1,0 +1,34 @@
+-- Smoke tests: each statement marked EXPECT FAIL must be rejected by the database.
+-- Run against a scratch DB only (inserts data).
+SET NAMES utf8mb4;
+INSERT INTO agents(name) VALUES ('Test Office');
+INSERT INTO users(name,username,password_hash,role_id,branch_id) VALUES ('t','t','x',1,1);
+INSERT INTO vehicles(plate_no,category,seats) VALUES ('BUS1','bus',52);
+INSERT INTO trips(kind,route,depart_at,vehicle_id,capacity,passenger_seats,express_seats,price,currency_id)
+  VALUES ('bus','Cairo-Khartoum',NOW()+INTERVAL 1 DAY,1,52,48,4,100,1);
+INSERT INTO bookings(serial_no,trip_id,seat_no,passenger_name,sale_price,currency_id) VALUES ('B1',1,5,'A',100,1);
+-- EXPECT FAIL: same live seat
+INSERT INTO bookings(serial_no,trip_id,seat_no,passenger_name,sale_price,currency_id) VALUES ('B2',1,5,'B',100,1);
+-- cancel frees the seat, then rebooking works
+UPDATE bookings SET status='cancelled' WHERE serial_no='B1';
+INSERT INTO bookings(serial_no,trip_id,seat_no,passenger_name,sale_price,currency_id) VALUES ('B3',1,5,'C',100,1);
+
+INSERT INTO treasuries(branch_id,currency_id,method) VALUES (1,1,'cash');
+INSERT INTO payments(serial_no,direction,kind,treasury_id,amount,currency_id,booking_id) VALUES ('P1','in','collection',1,100,1,3);
+-- EXPECT FAIL: currency differs from treasury currency
+INSERT INTO payments(serial_no,direction,kind,treasury_id,amount,currency_id) VALUES ('P2','in','collection',1,50,2);
+-- EXPECT FAIL: payments immutable
+UPDATE payments SET amount=1 WHERE serial_no='P1';
+-- EXPECT FAIL: payments cannot be deleted
+DELETE FROM payments WHERE serial_no='P1';
+-- reversal is a new row
+INSERT INTO payments(serial_no,direction,kind,treasury_id,amount,currency_id,booking_id,reversal_of_id) VALUES ('P3','out','reversal',1,100,1,3,1);
+-- EXPECT FAIL: second reversal of the same payment
+INSERT INTO payments(serial_no,direction,kind,treasury_id,amount,currency_id,booking_id,reversal_of_id) VALUES ('P4','out','reversal',1,100,1,3,1);
+-- EXPECT FAIL: audit immutable
+INSERT INTO audit_logs(action,entity) VALUES ('x','y');
+UPDATE audit_logs SET action='z';
+-- EXPECT FAIL: second main warehouse
+INSERT INTO branches(name,country,is_main_warehouse) VALUES ('X','EG',1);
+
+SELECT 'treasury balance (expect 0.00)' AS check_name, balance FROM v_treasury_balances WHERE treasury_id=1;
