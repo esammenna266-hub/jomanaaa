@@ -2,6 +2,7 @@
 
 namespace App\Modules\Booking\Models;
 
+use App\Modules\Booking\Services\SeatMapBroadcaster;
 use App\Modules\Core\Models\Agent;
 use App\Modules\Core\Models\Branch;
 use App\Modules\Finance\Models\Payment;
@@ -26,6 +27,12 @@ class Booking extends Model
     protected function casts(): array
     {
         return ['sale_price' => 'decimal:2', 'agent_price' => 'decimal:2'];
+    }
+
+    protected static function booted(): void
+    {
+        // A seat was taken, paid, freed or marked travelled: open seat maps refresh.
+        static::saved(fn (Booking $booking) => SeatMapBroadcaster::changed($booking->trip_id));
     }
 
     public function trip(): BelongsTo

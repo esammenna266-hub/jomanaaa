@@ -24,10 +24,11 @@ export interface SeatMap {
   seats: Seat[];
 }
 
-export function useSeatMap(tripId: number) {
+export function useSeatMap(tripId: number, refetchMs: number | false = false) {
   return useQuery({
     queryKey: ['passenger-trip', tripId],
     queryFn: async () => (await api<{ data: SeatMap }>(`/trips/${tripId}/seats`)).data,
+    refetchInterval: refetchMs,
   });
 }
 

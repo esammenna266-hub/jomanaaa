@@ -2,6 +2,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { api, setUnauthorizedHandler, tokenStore } from '../../shared/api/client';
 import type { CurrentUser, Scope } from '../../shared/api/types';
+import { resetEcho } from '../../shared/realtime/echo';
 
 export type AuthStatus = 'loading' | 'authenticated' | 'anonymous';
 
@@ -33,6 +34,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [status, setStatus] = useState<AuthStatus>(tokenStore.get() ? 'loading' : 'anonymous');
 
   const clearSession = useCallback(() => {
+    resetEcho();
     tokenStore.clear();
     setUser(null);
     setStatus('anonymous');

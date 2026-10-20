@@ -3,6 +3,7 @@
 namespace App\Modules\Shipping\Models;
 
 use App\Modules\Booking\Models\PassengerTrip;
+use App\Modules\Booking\Services\SeatMapBroadcaster;
 use App\Modules\Core\Models\Branch;
 use App\Modules\Finance\Models\Installment;
 use App\Modules\Finance\Models\Payment;
@@ -45,6 +46,19 @@ class Shipment extends Model
             'expected_date' => 'date:Y-m-d',
             'delivered_at' => 'datetime',
         ];
+    }
+
+    protected static function booted(): void
+    {
+        // An express shipment riding a bus trip changes that trip's express seats and shipment list. Both the trip it
+        // joined and the one it left (a move, a cancellation) are announced to open seat maps.
+        static::saved(function (Shipment $shipment): void {
+            SeatMapBroadcaster::changed($shipment->bus_trip_id);
+
+            if ($shipment->wasChanged('bus_trip_id')) {
+                SeatMapBroadcaster::changed($shipment->getPrevious()['bus_trip_id'] ?? null);
+            }
+        });
     }
 
     public function customer(): BelongsTo

@@ -84,6 +84,13 @@ node database/demo/demo-data.mjs http://127.0.0.1:8000 owner "<owner password>" 
 It runs through the public API (so every rule is checked), refuses to run twice, and writes the new logins to `backend/DEMO_ACCOUNTS.local.txt` (ignored by git). Do not run it on a real database.
 
 The logo shows in the web app (`frontend/public/logo.png`) and in the header of every printed paper (`backend/resources/branding/logo.png`, or set `COMPANY_LOGO`). Without a file the company name is shown alone. Reports open as A4 PDF (portrait, or landscape when the table is wide) and as an Excel workbook from the Reports screen.
+### Live seat maps (WebSocket)
+Seat maps update on every screen the moment someone books, cancels or moves a trip. It uses Laravel Reverb: set `BROADCAST_CONNECTION=reverb` and the `REVERB_*` values in `backend/.env` (see `.env.example`), put the same key in `frontend/.env` as `VITE_REVERB_APP_KEY`, and keep this running next to the API:
+
+```powershell
+cd backend; php artisan reverb:start      # port 8080
+```
+The event carries no passenger data; screens ask the API again, so permissions still apply. If Reverb is down or not configured, bookings still work and the seat map refreshes every 15 seconds. In production run `reverb:start` as a service and put it behind HTTPS (`wss`) on the same domain.
 ### Frontend
 ```powershell
 cd frontend; npm install; npm run dev    # http://localhost:5173, proxies /api to the backend on :8000

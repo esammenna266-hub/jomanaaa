@@ -2,6 +2,7 @@
 
 namespace App\Modules\Booking\Models;
 
+use App\Modules\Booking\Services\SeatMapBroadcaster;
 use App\Modules\MasterData\Models\Driver;
 use App\Modules\MasterData\Models\Vehicle;
 use App\Modules\Shipping\Models\Shipment;
@@ -36,6 +37,12 @@ class PassengerTrip extends Model
             'express_cutoff_at' => 'datetime',
             'price' => 'decimal:2',
         ];
+    }
+
+    protected static function booted(): void
+    {
+        // The trip itself changed (price, seats, status, express cutoff): open seat maps refresh.
+        static::saved(fn (PassengerTrip $trip) => SeatMapBroadcaster::changed($trip->id));
     }
 
     public function vehicle(): BelongsTo

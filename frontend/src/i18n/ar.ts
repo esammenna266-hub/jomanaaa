@@ -486,6 +486,8 @@ export const ar = {
     create: 'فتح الرحلة',
     // file
     file: (route: string) => `رحلة ${route}`,
+    liveOn: 'تحديث لحظي شغال',
+    liveOff: 'بيتحدّث كل 15 ثانية',
     departedHint: 'الحجز والإلغاء بيتوقفوا بعد التحرك.',
     seatMap: 'خريطة الكراسي',
     free: 'فاضي',

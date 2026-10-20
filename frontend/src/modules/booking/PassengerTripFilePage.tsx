@@ -16,13 +16,15 @@ import { currencyName, useCurrencies } from '../master-data/api';
 import { ShipmentStatusBadge } from '../shipping/ShipmentStatusBadge';
 import { isSellable, tripAction, useSeatMap, useTripExpressShipments, type SeatMap } from './api';
 import { BookDialog, SeatDialog } from './BookingDialogs';
+import { REFRESH_WHEN_LIVE_MS, REFRESH_WHEN_NOT_LIVE_MS, useLiveTrip } from './useLiveTrip';
 import { PassengerTripStatusBadge } from './PassengerTripsPage';
 
 type TripAction = 'depart' | 'complete' | 'cancel';
 
 export function PassengerTripFilePage() {
   const id = Number(useParams().id);
-  const query = useSeatMap(id);
+  const live = useLiveTrip(id);
+  const query = useSeatMap(id, live ? REFRESH_WHEN_LIVE_MS : REFRESH_WHEN_NOT_LIVE_MS);
 
   if (query.isPending) {
     return <Spinner />;
@@ -32,10 +34,10 @@ export function PassengerTripFilePage() {
     return <Notice tone="error">{query.error.message}</Notice>;
   }
 
-  return <PassengerTripFile map={query.data} />;
+  return <PassengerTripFile map={query.data} live={live} />;
 }
 
-function PassengerTripFile({ map }: { map: SeatMap }) {
+function PassengerTripFile({ map, live }: { map: SeatMap; live: boolean }) {
   const { trip, seats } = map;
   const { can } = useAuth();
   const queryClient = useQueryClient();
@@ -92,6 +94,9 @@ function PassengerTripFile({ map }: { map: SeatMap }) {
         <PassengerTripStatusBadge status={trip.status} />
         <span className="muted">{ar.booking.seatsOf(trip.booked_seats, trip.sellable_seats)}</span>
         {departed && <span className="muted">{ar.booking.departedHint}</span>}
+        <span className={`live live--${live ? 'on' : 'off'}`} role="status">
+          {live ? ar.booking.liveOn : ar.booking.liveOff}
+        </span>
       </div>
 
       <section className="card">

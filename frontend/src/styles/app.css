@@ -215,3 +215,9 @@ a { color: var(--primary); }
 .brand__logo { display: block; object-fit: contain; }
 .brand--small .brand__logo { height: 38px; max-width: 64px; background: #fff; border-radius: 6px; padding: 2px; }
 .brand--large .brand__logo { height: 84px; max-width: 220px; }
+
+/* Live updates indicator */
+.live { font-size: 0.82rem; padding-inline-start: 1rem; position: relative; color: var(--muted); }
+.live::before { content: ''; position: absolute; inset-inline-start: 0; top: 50%; width: 0.5rem; height: 0.5rem; margin-top: -0.25rem; border-radius: 50%; background: var(--muted); }
+.live--on { color: var(--success); }
+.live--on::before { background: var(--success); }
