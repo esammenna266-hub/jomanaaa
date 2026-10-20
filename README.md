@@ -76,6 +76,14 @@ Documents are HTML templates rendered by headless Chromium (Browsershot). The se
 
 Company name, address, phones and the undertaking text are set in `.env` (see `config/gomana.php`).
 
+### Demo data and the company logo
+```powershell
+cd backend
+node database/demo/demo-data.mjs http://127.0.0.1:8000 owner "<owner password>"   # branches, treasuries, logins, trips, shipments, an office
+```
+It runs through the public API (so every rule is checked), refuses to run twice, and writes the new logins to `backend/DEMO_ACCOUNTS.local.txt` (ignored by git). Do not run it on a real database.
+
+The logo shows in the web app (`frontend/public/logo.png`) and in the header of every printed paper (`backend/resources/branding/logo.png`, or set `COMPANY_LOGO`). Without a file the company name is shown alone. Reports open as A4 PDF (portrait, or landscape when the table is wide) and as an Excel workbook from the Reports screen.
 ### Frontend
 ```powershell
 cd frontend; npm install; npm run dev    # http://localhost:5173, proxies /api to the backend on :8000

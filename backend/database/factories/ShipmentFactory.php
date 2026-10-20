@@ -29,7 +29,7 @@ class ShipmentFactory extends Factory
             'customer_id' => Customer::factory(),
             'consignee_name' => fake()->name(),
             'consignee_phone' => '+249912345678',
-            'destination_id' => DB::table('destinations')->value('id'),
+            'destination_id' => DB::table('destinations')->orderBy('id')->value('id'),
             'currency_id' => 1,
             'price' => '1000.00',
             'discount' => '0.00',

@@ -26,6 +26,7 @@ export const navItems: NavItem[] = [
   { to: '/remittances', label: ar.nav.remittances, permission: ['remittance.send', 'remittance.confirm'] },
   { to: '/customers', label: ar.nav.customers, permission: 'customer.view' },
   { to: '/reports', label: ar.nav.reports, permission: 'report.view', hideForOffice: true },
+  { to: '/basic-data', label: ar.nav.basicData, permission: 'masterdata.view', hideForOffice: true },
   { to: '/my-account', label: ar.nav.myAccount, officeOnly: true },
   { to: '/branches', label: ar.nav.branches, hideForOffice: true },
   { to: '/users', label: ar.nav.users, permission: 'user.manage' },

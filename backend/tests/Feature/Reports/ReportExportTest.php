@@ -8,6 +8,7 @@ use App\Modules\Finance\Models\Treasury;
 use App\Modules\Finance\Services\LedgerService;
 use App\Modules\MasterData\Models\Customer;
 use App\Modules\Shipping\Models\Shipment;
+use App\Support\Branding;
 use DOMDocument;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use SimpleXMLElement;
@@ -187,6 +188,27 @@ class ReportExportTest extends TestCase
 
         $this->assertStringContainsString('الفرع: فرع القاهرة', $this->rendered['html']);
         $this->assertStringNotContainsString('فيصل', $this->rendered['html']);
+    }
+
+    public function test_the_company_logo_is_embedded_in_the_paper_when_the_file_exists_and_left_out_otherwise(): void
+    {
+        $this->signInAs('owner');
+        $png = base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==');
+        $path = tempnam(sys_get_temp_dir(), 'logo').'.png';
+        file_put_contents($path, $png);
+
+        config(['gomana.company.logo' => '/definitely/missing/logo.png']);
+        Branding::forget();
+        $this->get('/api/v1/reports/treasury-balances?format=pdf')->assertOk();
+        $this->assertStringNotContainsString('<img', $this->rendered['html']);
+
+        config(['gomana.company.logo' => $path]);
+        Branding::forget();
+        $this->get('/api/v1/reports/treasury-balances?format=pdf')->assertOk();
+        $this->assertStringContainsString('src="data:image/png;base64,', $this->rendered['html']);
+
+        Branding::forget();
+        unlink($path);
     }
 
     public function test_exports_follow_the_same_permissions_as_the_screen(): void

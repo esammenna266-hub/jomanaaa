@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { api, apiBlob } from '../../shared/api/client';
+import { api } from '../../shared/api/client';
 
 export interface ReportTable {
   title: string;
@@ -36,11 +36,10 @@ export const REPORTS: ReportDefinition[] = [
   { slug: 'agents', dated: false },
 ];
 
-const queryString = (from: string, to: string, extra: Record<string, string> = {}) => {
+const queryString = (from: string, to: string) => {
   const params = new URLSearchParams();
   if (from) params.set('from', from);
   if (to) params.set('to', to);
-  Object.entries(extra).forEach(([key, value]) => params.set(key, value));
   const text = params.toString();
 
   return text ? `?${text}` : '';
@@ -59,17 +58,4 @@ export function useDashboard(enabled: boolean) {
     queryFn: async () => (await api<{ data: Dashboard }>('/reports/dashboard')).data,
     enabled,
   });
-}
-
-/** Downloads the report as a CSV file (Excel opens it) using the session token. */
-export async function downloadReportCsv(slug: string, from: string, to: string): Promise<void> {
-  const blob = await apiBlob(`/reports/${slug}${queryString(from, to, { format: 'csv' })}`);
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = `${slug}.csv`;
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-  window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
 }

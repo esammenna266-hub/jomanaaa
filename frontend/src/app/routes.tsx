@@ -13,6 +13,7 @@ import { ChangePasswordPage } from '../modules/identity/ChangePasswordPage';
 import { LoginPage } from '../modules/identity/LoginPage';
 import { UsersPage } from '../modules/identity/UsersPage';
 import { CustomersPage } from '../modules/master-data/CustomersPage';
+import { BasicDataPage } from '../modules/master-data/BasicDataPage';
 import { RemittancesPage } from '../modules/finance/RemittancesPage';
 import { TreasuriesPage } from '../modules/finance/TreasuriesPage';
 import { ShipmentFilePage } from '../modules/shipping/ShipmentFilePage';
@@ -76,6 +77,10 @@ export function AppRoutes() {
           <Route element={<RequirePermission permission="booking.view" />}>
             <Route path="bookings" element={<BookingsPage />} />
             <Route path="service-bookings" element={<ServiceBookingsPage />} />
+          </Route>
+
+          <Route element={<RequirePermission permission="masterdata.view" />}>
+            <Route path="basic-data" element={<BasicDataPage />} />
           </Route>
 
           <Route element={<RequirePermission permission="report.view" />}>

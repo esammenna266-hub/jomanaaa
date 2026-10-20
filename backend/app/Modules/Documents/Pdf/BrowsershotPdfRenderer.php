@@ -20,7 +20,7 @@ final class BrowsershotPdfRenderer implements PdfRenderer
         if ($paper === 'TICKET') {
             $shot->paperSize(90, 210, 'mm')->margins(4, 4, 4, 4);
         } elseif ($paper === 'REPORT' || $paper === 'REPORT-L') {
-            $shot->format('A4')->landscape($paper === 'REPORT-L')->margins(12, 10, 20, 10)->hideHeader()->footerHtml($this->reportFooter());
+            $shot->format('A4')->landscape($paper === 'REPORT-L')->margins(12, 10, 20, 10)->showBrowserHeaderAndFooter()->hideHeader()->footerHtml($this->reportFooter());
         } else {
             $shot->format($paper)->margins(10, 10, 10, 10);
         }
@@ -56,7 +56,7 @@ final class BrowsershotPdfRenderer implements PdfRenderer
             'س.ت: '.$company['commercial_register'].' — ب.ض: '.$company['tax_card'],
         ])->filter()->implode(' — ');
 
-        return '<div style="width:100%;font-size:8px;color:#444;text-align:center;direction:rtl;font-family:Tahoma,Arial,sans-serif;padding:0 10mm">'
+        return '<div style="width:100%;font-size:9px;color:#444;text-align:center;direction:rtl;font-family:Tahoma,Arial,sans-serif;padding:0 10mm">'
             .e($line)
             .'<div style="margin-top:2px">صفحة <span class="pageNumber"></span> من <span class="totalPages"></span></div></div>';
     }

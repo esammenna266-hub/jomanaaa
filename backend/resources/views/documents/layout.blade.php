@@ -7,6 +7,8 @@
         * { box-sizing: border-box; }
         body { font-family: 'Cairo', 'Noto Naskh Arabic', 'Segoe UI', Tahoma, Arial, sans-serif; font-size: {{ ['A5' => '11.5px', 'TICKET' => '11px'][$document['paper']] ?? '13px' }}; color: #111; margin: 0; line-height: 1.6; }
         header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #1b3a5c; padding-bottom: 6px; margin-bottom: 10px; }
+        .brand { display: flex; align-items: center; gap: 10px; }
+        img.logo { height: {{ $document['paper'] === 'TICKET' ? '34px' : '58px' }}; max-width: {{ $document['paper'] === 'TICKET' ? '60px' : '130px' }}; object-fit: contain; }
         .company { font-size: 20px; font-weight: 700; color: #1b3a5c; }
         .doc-title { font-size: 16px; font-weight: 700; margin-top: 2px; }
         .meta { text-align: left; }
@@ -29,13 +31,19 @@
     @stack('styles')
 </head>
 <body>
+@php($logo = \App\Support\Branding::logoDataUri())
 <header>
-    <div>
-        <div class="company">{{ $company['name'] }}</div>
-        <div class="doc-title">{{ $document['title'] }}</div>
-        @if ($document['version'] > 1)
-            <div class="print-note">نسخة معدلة رقم {{ $document['version'] }}</div>
+    <div class="brand">
+        @if ($logo)
+            <img class="logo" src="{{ $logo }}" alt="">
         @endif
+        <div>
+            <div class="company">{{ $company['name'] }}</div>
+            <div class="doc-title">{{ $document['title'] }}</div>
+            @if ($document['version'] > 1)
+                <div class="print-note">نسخة معدلة رقم {{ $document['version'] }}</div>
+            @endif
+        </div>
     </div>
     <div class="meta">
         <div class="serial">{{ $document['serial'] }}</div>

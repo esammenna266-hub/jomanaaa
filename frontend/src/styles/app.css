@@ -109,7 +109,7 @@ a { color: var(--primary); }
 /* App shell: the sidebar sits on the right in RTL */
 .shell { display: flex; min-height: 100%; }
 .sidebar { width: var(--sidebar-w); flex-shrink: 0; background: var(--primary); color: var(--primary-text); padding: 1rem 0.75rem; }
-.sidebar__brand { font-size: 1.35rem; font-weight: 800; padding: 0.4rem 0.75rem 1rem; }
+.sidebar__brand { padding: 0.4rem 0.75rem 1rem; }
 .sidebar nav { display: flex; flex-direction: column; gap: 0.2rem; }
 .sidebar__link { color: inherit; text-decoration: none; padding: 0.55rem 0.75rem; border-radius: var(--radius); opacity: 0.85; }
 .sidebar__link:hover { opacity: 1; background: rgba(255, 255, 255, 0.12); }
@@ -166,6 +166,12 @@ a { color: var(--primary); }
 
 .table td .wrap { display: inline-block; white-space: normal; min-width: 180px; max-width: 320px; }
 
+/* Tabs */
+.tabs { display: flex; gap: 0.25rem; flex-wrap: wrap; border-bottom: 1px solid var(--border); margin-bottom: 1rem; }
+.tabs__tab { font: inherit; background: none; border: 0; border-bottom: 3px solid transparent; padding: 0.55rem 0.9rem; cursor: pointer; color: var(--muted); }
+.tabs__tab:hover { color: var(--text); }
+.tabs__tab--active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 700; }
+
 /* Reports and dashboard */
 .card--link { display: block; color: inherit; text-decoration: none; }
 .card--link:hover { border-color: var(--primary); }
@@ -191,7 +197,7 @@ a { color: var(--primary); }
 /* Login */
 .auth { min-height: 100%; display: grid; place-items: center; padding: 1rem; }
 .auth__card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.75rem; width: min(400px, 100%); box-shadow: var(--shadow); }
-.auth__brand { text-align: center; font-size: 1.9rem; font-weight: 800; color: var(--primary); margin-bottom: 0.25rem; }
+.auth__brand { justify-content: center; color: var(--primary); margin-bottom: 0.25rem; }
 .auth__title { text-align: center; margin-bottom: 1.25rem; color: var(--muted); font-size: 1rem; }
 .auth__submit { width: 100%; }
 
@@ -201,3 +207,11 @@ a { color: var(--primary); }
 .card__label { color: var(--muted); font-size: 0.85rem; }
 .card__value { font-weight: 700; font-size: 1.1rem; }
 .secret { font-family: ui-monospace, Consolas, monospace; font-size: 1.3rem; direction: ltr; text-align: center; padding: 0.7rem; border: 2px dashed var(--border); border-radius: var(--radius); margin: 0.7rem 0; user-select: all; }
+
+/* Brand: the company logo next to its name */
+.brand { display: flex; align-items: center; gap: 0.6rem; font-weight: 800; }
+.brand--small { font-size: 1.35rem; }
+.brand--large { font-size: 1.9rem; flex-direction: column; gap: 0.4rem; }
+.brand__logo { display: block; object-fit: contain; }
+.brand--small .brand__logo { height: 38px; max-width: 64px; background: #fff; border-radius: 6px; padding: 2px; }
+.brand--large .brand__logo { height: 84px; max-width: 220px; }

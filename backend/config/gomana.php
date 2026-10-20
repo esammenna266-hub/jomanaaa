@@ -11,6 +11,9 @@ return [
         'phones' => env('COMPANY_PHONES'),
         'commercial_register' => env('COMPANY_COMMERCIAL_REGISTER', '39187'),
         'tax_card' => env('COMPANY_TAX_CARD', '769/443/052'),
+        // Printed in the header of every paper (png, jpg, svg or webp, under 2 MB). Put the file at
+        // resources/branding/logo.png or point COMPANY_LOGO at it. The web app shows frontend/public/logo.png.
+        'logo' => env('COMPANY_LOGO', resource_path('branding/logo.png')),
     ],
 
     /*

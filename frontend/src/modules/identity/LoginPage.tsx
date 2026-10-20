@@ -3,6 +3,7 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../app/auth/AuthContext';
 import { ar } from '../../i18n/ar';
 import { fieldError, formError } from '../../shared/forms/errors';
+import { Brand } from '../../shared/ui/Brand';
 import { Button } from '../../shared/ui/Button';
 import { TextField } from '../../shared/ui/Fields';
 import { Notice } from '../../shared/ui/Notice';
@@ -37,7 +38,7 @@ export function LoginPage() {
   return (
     <div className="auth">
       <form className="auth__card" onSubmit={onSubmit} noValidate>
-        <div className="auth__brand">{ar.appName}</div>
+        <Brand size="large" className="auth__brand" />
         <h1 className="auth__title">{ar.auth.loginTitle}</h1>
 
         {formError(error, ['username']) && <Notice tone="error">{formError(error, ['username'])}</Notice>}

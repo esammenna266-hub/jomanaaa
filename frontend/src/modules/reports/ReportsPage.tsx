@@ -6,7 +6,8 @@ import { TextField } from '../../shared/ui/Fields';
 import { Notice } from '../../shared/ui/Notice';
 import { PageHeader } from '../../shared/ui/PageHeader';
 import { Spinner } from '../../shared/ui/Spinner';
-import { downloadReportCsv, REPORTS, useReport } from './api';
+import { REPORTS, useReport } from './api';
+import { downloadReport } from './download';
 
 /** The management and finance reports: pick one, set the period if it has one, read it, print it or open it in Excel. */
 export function ReportsPage() {
@@ -17,16 +18,16 @@ export function ReportsPage() {
   const definition = REPORTS.find((report) => report.slug === slug)!;
   const range = definition.dated ? { from, to } : { from: '', to: '' };
   const report = useReport(slug, range.from, range.to);
-  const download = useMutation({ mutationFn: () => downloadReportCsv(slug, range.from, range.to) });
+  const download = useMutation({ mutationFn: (format: 'pdf' | 'xlsx') => downloadReport(slug, range.from, range.to, format) });
 
   return (
     <>
       <PageHeader title={ar.reports.title}>
         <div className="actions-bar no-print">
-          <Button variant="secondary" disabled={!report.data} onClick={() => window.print()}>
-            {ar.reports.print}
+          <Button variant="secondary" disabled={!report.data || download.isPending} onClick={() => download.mutate('pdf')}>
+            {ar.reports.pdf}
           </Button>
-          <Button variant="secondary" loading={download.isPending} disabled={!report.data} onClick={() => download.mutate()}>
+          <Button variant="secondary" disabled={!report.data || download.isPending} onClick={() => download.mutate('xlsx')}>
             {ar.reports.excel}
           </Button>
         </div>

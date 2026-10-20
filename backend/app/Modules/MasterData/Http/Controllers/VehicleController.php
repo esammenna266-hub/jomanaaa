@@ -31,7 +31,7 @@ class VehicleController extends CrudController
             'category' => [$required, Rule::in(['jumbo', 'single', 'trailer', 'bus'])],
             'body' => ['nullable', Rule::in(['closed', 'open'])],
             'min_ton' => ['nullable', 'numeric', 'min:0'],
-            'max_ton' => ['nullable', 'numeric', 'gte:min_ton'],
+            'max_ton' => ['nullable', 'numeric', 'min:0', Rule::when($request->filled('min_ton'), ['gte:min_ton'])],
             'seats' => [$category === 'bus' ? 'required' : 'nullable', 'integer', 'min:1'],
             'seat_layout_id' => ['nullable', 'integer', Rule::exists('seat_layouts', 'id')],
             'owner_name' => ['nullable', 'string', 'max:120'],

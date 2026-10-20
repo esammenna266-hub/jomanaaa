@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { ar } from '../i18n/ar';
+import { Brand } from '../shared/ui/Brand';
 import { Button } from '../shared/ui/Button';
 import { useAuth } from './auth/AuthContext';
 import { navItems } from './nav';
@@ -20,7 +21,7 @@ export function Layout() {
   return (
     <div className="shell">
       <aside className={`sidebar${menuOpen ? ' sidebar--open' : ''}`}>
-        <div className="sidebar__brand">{ar.appName}</div>
+        <Brand size="small" className="sidebar__brand" />
         <nav aria-label={ar.nav.menu}>
           {items.map((item) => (
             <NavLink

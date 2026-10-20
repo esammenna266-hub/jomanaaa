@@ -7,6 +7,8 @@
         * { box-sizing: border-box; }
         body { font-family: 'Cairo', 'Noto Naskh Arabic', 'Segoe UI', Tahoma, Arial, sans-serif; font-size: {{ $landscape ? '11.5px' : '12.5px' }}; color: #111; margin: 0; line-height: 1.55; }
         header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #1b3a5c; padding-bottom: 6px; margin-bottom: 10px; }
+        .brand { display: flex; align-items: center; gap: 10px; }
+        img.logo { height: 56px; max-width: 130px; object-fit: contain; }
         .company { font-size: 20px; font-weight: 700; color: #1b3a5c; }
         .report-title { font-size: 17px; font-weight: 700; margin-top: 2px; }
         .notes { text-align: left; font-size: 10.5px; color: #444; line-height: 1.7; }
@@ -22,10 +24,16 @@
     </style>
 </head>
 <body>
+@php($logo = \App\Support\Branding::logoDataUri())
 <header>
-    <div>
-        <div class="company">{{ $company['name'] }}</div>
-        <div class="report-title">{{ $title }}</div>
+    <div class="brand">
+        @if ($logo)
+            <img class="logo" src="{{ $logo }}" alt="">
+        @endif
+        <div>
+            <div class="company">{{ $company['name'] }}</div>
+            <div class="report-title">{{ $title }}</div>
+        </div>
     </div>
     <div class="notes">
         @foreach ($notes as $note)

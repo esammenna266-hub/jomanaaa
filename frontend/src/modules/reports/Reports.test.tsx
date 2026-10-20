@@ -81,7 +81,7 @@ describe('reports page', () => {
     expect(await screen.findByText(ar.common.empty)).toBeInTheDocument();
   });
 
-  it('exports the shown report as CSV with the same filters', async () => {
+  it('saves the shown report as an Excel workbook, asking the server with the same filters', async () => {
     const user = userEvent.setup();
     const click = vi.fn();
     const createElement = document.createElement.bind(document);
@@ -93,16 +93,33 @@ describe('reports page', () => {
 
       return element;
     });
-    URL.createObjectURL = vi.fn(() => 'blob:csv-url');
+    URL.createObjectURL = vi.fn(() => 'blob:xlsx-url');
     URL.revokeObjectURL = vi.fn();
-    const calls = renderApp('/reports', { user: owner, routes: reportRoutes([{ path: '/reports/debts', body: debts }]) });
+    const calls = renderApp('/reports', { user: owner, routes: reportRoutes() });
 
-    await user.selectOptions(await screen.findByRole('combobox', { name: ar.reports.report }), 'debts');
-    await screen.findByText('سعد محمود');
+    await user.selectOptions(await screen.findByRole('combobox', { name: ar.reports.report }), 'refunds');
+    await user.type(await screen.findByLabelText(ar.reports.from), '2026-10-01');
+    await screen.findByText(ar.common.empty);
     await user.click(screen.getByRole('button', { name: ar.reports.excel }));
 
     await waitFor(() => expect(click).toHaveBeenCalled());
-    expect(calls.filter((call) => call.path === '/reports/debts').some((call) => call.query.get('format') === 'csv')).toBe(true);
+    const request = calls.filter((call) => call.path === '/reports/refunds').find((call) => call.query.get('format') === 'xlsx');
+    expect(request?.query.get('from')).toBe('2026-10-01');
+  });
+
+  it('opens the report as an A4 PDF in a new tab', async () => {
+    const user = userEvent.setup();
+    const tab = { location: { href: '' }, close: vi.fn() };
+    vi.spyOn(window, 'open').mockReturnValue(tab as unknown as Window);
+    URL.createObjectURL = vi.fn(() => 'blob:pdf-url');
+    URL.revokeObjectURL = vi.fn();
+    const calls = renderApp('/reports', { user: owner, routes: reportRoutes() });
+
+    await screen.findByRole('heading', { name: 'أرصدة الخزائن' });
+    await user.click(screen.getByRole('button', { name: ar.reports.pdf }));
+
+    await waitFor(() => expect(tab.location.href).toBe('blob:pdf-url'));
+    expect(calls.some((call) => call.path === '/reports/treasury-balances' && call.query.get('format') === 'pdf')).toBe(true);
   });
 
   it('keeps users without the permission out', async () => {
