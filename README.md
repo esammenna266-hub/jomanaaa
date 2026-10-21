@@ -91,6 +91,8 @@ Seat maps update on every screen the moment someone books, cancels or moves a tr
 cd backend; php artisan reverb:start      # port 8080
 ```
 The event carries no passenger data; screens ask the API again, so permissions still apply. If Reverb is down or not configured, bookings still work and the seat map refreshes every 15 seconds. In production run `reverb:start` as a service and put it behind HTTPS (`wss`) on the same domain.
+### Running the demo on this computer (no tools needed)
+Double-click `start-demo.bat`: it starts the API, the live-update server and the web app, then opens http://localhost:5173. Logins are in `backend/DEMO_ACCOUNTS.local.txt`. Double-click `stop-demo.bat` to stop everything. MySQL must be running (it is a Windows service). Set `GOMANA_NO_BROWSER=1` to skip opening the browser.
 ### Putting a demo online
 The web app is static and fits **Vercel**. The API is PHP/Laravel with MySQL and cannot run there; host it on anything that runs PHP 8.3 and MySQL 8 (a VPS, Railway, Render, Fly.io, or hosting with PHP 8.3).
 
