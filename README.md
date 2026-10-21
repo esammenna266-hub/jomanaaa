@@ -91,6 +91,12 @@ Seat maps update on every screen the moment someone books, cancels or moves a tr
 cd backend; php artisan reverb:start      # port 8080
 ```
 The event carries no passenger data; screens ask the API again, so permissions still apply. If Reverb is down or not configured, bookings still work and the seat map refreshes every 15 seconds. In production run `reverb:start` as a service and put it behind HTTPS (`wss`) on the same domain.
+### Putting a demo online
+The web app is static and fits **Vercel**. The API is PHP/Laravel with MySQL and cannot run there; host it on anything that runs PHP 8.3 and MySQL 8 (a VPS, Railway, Render, Fly.io, or hosting with PHP 8.3).
+
+1. **API host:** set `APP_ENV=production`, `APP_DEBUG=false`, `APP_URL`, the `DB_*` values and `CORS_ALLOWED_ORIGINS=https://<your vercel domain>`; then `php artisan key:generate`, `php artisan migrate --force` and `php artisan gomana:create-owner <name>`. Use a new database with its own password, never a real one. PDFs need Node and Chrome on that host (`PDF_CHROME_PATH`); everything else, including Excel, works without them. Live seat maps need `php artisan reverb:start` behind HTTPS; without it the seat map refreshes every 15 seconds.
+2. **Vercel:** import this repository, set *Root Directory* to `frontend`, and add `VITE_API_URL=https://<your api host>` (and the `VITE_REVERB_*` values for live updates). `frontend/vercel.json` already sends every path to the app.
+3. For a client demo, fill the demo database with `node backend/database/demo/demo-data.mjs` against the API and share the logins privately.
 ### Frontend
 ```powershell
 cd frontend; npm install; npm run dev    # http://localhost:5173, proxies /api to the backend on :8000
